@@ -1,9 +1,9 @@
 const socket = io();
 let connectionsUsers =[];
-
+let currentConnection={};
 
 socket.on("admin_list_all_users", (connections) => {
-   // console.log(connections);
+   console.log("connection1:",connections);
    connectionsUsers = connections;
    document.getElementById("list_users").innerHTML = "";
 
@@ -16,6 +16,20 @@ socket.on("admin_list_all_users", (connections) => {
        });
        document.getElementById("list_users").innerHTML +=rendered;
    });
+});
+
+socket.on("admin_current_user", (connections) => {
+  console.log("connection1:",connections);
+  currentConnection = connections;
+  document.getElementById("list_users").innerHTML = "";
+
+  let template = document.getElementById("template").innerHTML;
+
+      const rendered = Mustache.render(template, {
+          email: connections.user.email,
+          id: connections.socket_id
+      });
+      document.getElementById("list_users").innerHTML +=rendered;
 });
 
 function call(id) {
@@ -89,8 +103,12 @@ function sendMessage(id) {
 }
 
 socket.on("admin_receive_message", (data) => {
-  const connection = connectionsUsers.find(connection => (connection.socket_id = data.socket_id));
-
+  // const connection = connectionsUsers.find(
+  //   (connection) => (connection.socket_id = data.socket_id)
+  // );
+  const connection = currentConnection;
+  console.log("connectionUsers:",currentConnection);
+  console.log("data:",data);
   const divMessages = document.getElementById(
     `allMessages${connection.user_id}`
   );

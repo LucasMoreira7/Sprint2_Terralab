@@ -68,7 +68,8 @@ io.on("connect", (socket) => {
             text,
             user_id
         });
-
+        const currentUser =  await connectionsService.findBySocketID(socket_id);
+        io.emit("admin_current_user",currentUser);
         io.to(socket_admin_id).emit("admin_receive_message", {
             message,
             socket_id,
